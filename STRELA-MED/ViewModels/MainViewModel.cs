@@ -25,7 +25,7 @@ namespace STRELA_MED.ViewModels
             ShowInventoryCommand = new RelayCommand(o => CurrentView = new InventoryViewModel(_currentUser));
 
             CurrentView = new EmployeeListViewModel(_currentUser);
-        }
+        }//влоарыва для коммита
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
