@@ -1,0 +1,23 @@
+﻿<Window x:Class="STRELA_MED.Views.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Авторизация - АИС СТРЕЛА-МЕД" 
+        Height="350" Width="400" 
+        WindowStartupLocation="CenterScreen"
+        Background="#ECF0F1">
+
+    <StackPanel VerticalAlignment="Center" Margin="40">
+        <TextBlock Text="АИС СТРЕЛА-МЕД" FontSize="22" FontWeight="Bold" 
+                   Foreground="#2C3E50" HorizontalAlignment="Center" Margin="0,0,0,30"/>
+
+        <Label Content="Логин:"/>
+        <TextBox x:Name="LoginBox" Height="30" Margin="0,0,0,10"/>
+
+        <Label Content="Пароль:"/>
+        <PasswordBox x:Name="PasswordBox" Height="30" Margin="0,0,0,20"/>
+
+        <Button Content="ВОЙТИ В СИСТЕМУ" Click="LoginButton_Click" 
+                Height="40" Background="#2C3E50" Foreground="White" 
+                FontWeight="Bold" Cursor="Hand"/>
+    </StackPanel>
+</Window>
