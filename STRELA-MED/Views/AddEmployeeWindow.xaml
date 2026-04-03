@@ -1,21 +1,40 @@
 ﻿<Window x:Class="STRELA_MED.Views.AddEmployeeWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Добавление сотрудника" Height="350" Width="400"
+        Title="Добавление сотрудника" Height="450" Width="400"
         WindowStartupLocation="CenterScreen">
 
     <StackPanel Margin="20">
-        <TextBlock Text="ФИО сотрудника:" FontWeight="Bold" Margin="0,5,0,0"/>
-        <TextBox x:Name="NameInput" Margin="0,0,0,10" Height="25"/>
+        <TextBlock Text="Фамилия:"/>
+        <TextBox x:Name="LastNameInput" Margin="0,5"/>
 
-        <TextBlock Text="Роль:" FontWeight="Bold" Margin="0,5,0,0"/>
-        <TextBox x:Name="RoleInput" Margin="0,0,0,10" Height="25"/>
+        <TextBlock Text="Имя:"/>
+        <TextBox x:Name="FirstNameInput" Margin="0,5"/>
+        
+        <TextBlock Text="Отчество:"/>
+        <TextBox x:Name="MiddleNameInput" Margin="0,5"/>
 
-        <TextBlock Text="ID пользователя:" FontWeight="Bold" Margin="0,5,0,0"/>
-        <TextBox x:Name="UserIdInput" Margin="0,0,0,10" Height="25"/>
+        <TextBlock Text="Дата рождения:"/>
+        <DatePicker x:Name="BirthDatePicker" Margin="0,5"/>
 
-        <Button Content="Сохранить" Click="Save_Click" 
-                Background="#27AE60" Foreground="White" 
-                Height="40" Margin="0,20,0,0" Cursor="Hand"/>
+        <TextBlock Text="Хронические заболевания (необязательно):" Margin="0,10,0,0"/>
+        <TextBox x:Name="ChronicDiseasesInput" 
+         Height="60" 
+         Margin="0,5" 
+         TextWrapping="Wrap" 
+         AcceptsReturn="True"
+         VerticalScrollBarVisibility="Auto"/>
+
+        <TextBlock Text="Должность:"/>
+        <ComboBox x:Name="PositionBox" Margin="0,5">
+            <ComboBoxItem Content="Врач-терапевт"/>
+            <ComboBoxItem Content="Хирург"/>
+            <ComboBoxItem Content="Медсестра"/>
+            <ComboBoxItem Content="Администратор"/>
+        </ComboBox>
+        
+        
+
+        <Button Content="Создать карточку" Click="Save_Click" Background="#27AE60" Margin="0,15"/>
     </StackPanel>
 </Window>

@@ -19,24 +19,33 @@
             <Button Content="🔄 Обновить" Command="{Binding RefreshCommand}" 
                     Width="120" Height="30" Background="#2980B9" Foreground="White"
                     Cursor="Hand"/>
+            <TextBlock Text="Искать по:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <ComboBox SelectedIndex="{Binding SelectedSearchIndex}" Width="120" Margin="0,0,10,0">
+                <ComboBoxItem Content="Фамилии"/>
+                <ComboBoxItem Content="Должности"/>
+            </ComboBox>
+
+            <TextBox Width="250" Height="25" 
+             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
         </StackPanel>
 
-        <DataGrid Grid.Row="1" 
-                  ItemsSource="{Binding Employees}" 
-                  SelectedItem="{Binding SelectedEmployee}"
-                  AutoGenerateColumns="False" 
-                  CanUserAddRows="False"
-                  IsReadOnly="True"
-                  GridLinesVisibility="Horizontal"
-                  RowHeight="35"
-                  HorizontalGridLinesBrush="#E0E0E0"
-                  HeadersVisibility="Column">
+        <DataGrid ItemsSource="{Binding Employees}" 
+          SelectedItem="{Binding SelectedEmployee}" 
+          AutoGenerateColumns="False" 
+          IsReadOnly="True" 
+          Grid.Row="1" Margin="10">
+
+            <DataGrid.InputBindings>
+                <MouseBinding MouseAction="LeftDoubleClick" 
+                      Command="{Binding OpenCardCommand}" />
+            </DataGrid.InputBindings>
 
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
-                <DataGridTextColumn Header="ФИО сотрудника" Binding="{Binding Name}" Width="*"/>
-                <DataGridTextColumn Header="Роль" Binding="{Binding Role}" Width="150"/>
-                <DataGridTextColumn Header="ID Пользователя" Binding="{Binding UserId}" Width="120"/>
+                <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName}" Width="*"/>
+                <DataGridTextColumn Header="Имя" Binding="{Binding FirstName}" Width="*"/>
+                <DataGridTextColumn Header="Отчество" Binding="{Binding MiddleName}" Width="*"/>
+                <DataGridTextColumn Header="Дата рождения" Binding="{Binding BirthDateDisplay}" Width="120"/>
+                <DataGridTextColumn Header="Должность" Binding="{Binding Position}" Width="2*"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

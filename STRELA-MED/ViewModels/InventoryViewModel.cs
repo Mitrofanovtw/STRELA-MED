@@ -1,12 +1,13 @@
 ﻿using STRELA_MED.Services;
+using STRELA_MED.Models;
 
 namespace STRELA_MED.ViewModels
 {
     public class InventoryViewModel
     {
-        private User _currentUser;
+        private Employee _currentUser;
 
-        public InventoryViewModel(User user)
+        public InventoryViewModel(Employee user)
         {
             _currentUser = user;
 

@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using STRELA_MED.Data;
 using STRELA_MED.Services;
+using System.Windows;
+using STRELA_MED.Models;
 
 namespace STRELA_MED.Views
 {
@@ -12,18 +14,33 @@ namespace STRELA_MED.Views
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            var user = AuthService.Authenticate(LoginBox.Text, PasswordBox.Password);
+            string login = LoginBox.Text.Trim();
+            string password = PasswordBox.Password.Trim();
 
-            if (user != null)
+            if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
             {
-                MainWindow main = new MainWindow(user);
-                main.Show();
-                this.Close();
+                MessageBox.Show("Заполните все поля!");
+                return;
             }
-            else
+
+            using (var db = new AppDbContext())
             {
-                MessageBox.Show("Неверный логин или пароль!", "Ошибка входа",
-                                MessageBoxButton.OK, MessageBoxImage.Error);
+                var user = db.Employees.AsEnumerable().FirstOrDefault(u =>
+                u.Login.Trim().ToLower() == login.ToLower() &&
+                u.Password == password);
+
+                if (user != null)
+                {
+                    CurrentUser.Data = user;
+                    var mainWindow = new MainWindow();
+                    mainWindow.Show();
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Неверный логин или пароль. Обратитесь к администратору медпункта.",
+                                    "Ошибка доступа", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
         }
     }

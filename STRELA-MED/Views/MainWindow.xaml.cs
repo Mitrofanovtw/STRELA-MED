@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using STRELA_MED.Models;
 
 namespace STRELA_MED.Views
 {
@@ -23,18 +24,64 @@ namespace STRELA_MED.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow(User user)
+        public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainViewModel(user);
+            if (CurrentUser.Data != null)
+            {
+                this.DataContext = new MainViewModel(CurrentUser.Data);
+                string role = CurrentUser.Data.Role.ToLower();
+                if (role == "admin" || role == "doctor")
+                {
+                    AdminPanel.Visibility = Visibility.Visible;
+                    UserPanel.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    AdminPanel.Visibility = Visibility.Collapsed;
+                    UserPanel.Visibility = Visibility.Visible;
+                }
+            }
+            else
+            {
+                var login = new LoginWindow();
+                login.Show();
+                this.Close();
+            }
+        }
+        private void Logout()
+        {
+            CurrentUser.Data = null;
+            LoginWindow loginWindow = new LoginWindow();
+            loginWindow.Show();
+
+            this.Close();
         }
 
-        private void Exit_Click(object sender, RoutedEventArgs e)
+        private void Logout_Click(object sender, RoutedEventArgs e)
         {
-            var result = MessageBox.Show("Вы уверены, что хотите выйти из системы?",
-                                         "Выход",
+            var result = MessageBox.Show("Вы уверены, что хотите выйти из аккаунта?",
+                                         "Смена пользователя",
                                          MessageBoxButton.YesNo,
                                          MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                CurrentUser.Data = null;
+
+                LoginWindow loginWindow = new LoginWindow();
+                loginWindow.Show();
+
+                this.Close();
+            }
+        }
+
+        private void Shutdown_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show("Вы уверены, что хотите закрыть приложение?",
+                                         "Выход",
+                                         MessageBoxButton.YesNo,
+                                         MessageBoxImage.Warning);
 
             if (result == MessageBoxResult.Yes)
             {

@@ -5,9 +5,60 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:STRELA_MED.ViewModels"
         xmlns:views="clr-namespace:STRELA_MED.Views"
+        xmlns:vmodels="clr-namespace:STRELA_MED.ViewModels"
         mc:Ignorable="d"
         Title="АИС Паспорт здоровья - ПО Стрела" Height="750" Width="1200"
         WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <Style x:Key="MenuButtonStyle" TargetType="RadioButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Margin" Value="0,5"/>
+            <Setter Property="Padding" Value="15,0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderThickness" Value="0"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#34495E"/>
+                </Trigger>
+
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Background" Value="#1ABC9C"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <DataTemplate DataType="{x:Type vmodels:EmployeeListViewModel}">
+            <views:EmployeeListView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vmodels:MedicalExamsViewModel}">
+            <views:MedicalExamsView />
+        </DataTemplate>
+
+
+    </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -18,46 +69,85 @@
         <Border Background="#2C3E50" Grid.Column="0">
             <StackPanel Margin="10">
                 <TextBlock Text="СТРЕЛА-МЕД" Foreground="White" FontSize="24" 
-                           FontWeight="Bold" Margin="0,20,0,40" HorizontalAlignment="Center"/>
+               FontWeight="Bold" Margin="0,20,0,40" HorizontalAlignment="Center"/>
 
-                <TextBlock Text="Сотрудник:" Foreground="Gray" FontSize="11"/>
-                <TextBlock Text="{Binding CurrentUser.FullName}" Foreground="White" 
-               FontWeight="Bold" FontSize="14"/>
+                <TextBlock Text="Вы вошли как:" Foreground="Gray" FontSize="11"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock Text="{Binding CurrentUser.LastName}" Foreground="White" FontWeight="Bold" FontSize="14" Margin="0,0,5,0"/>
+                    <TextBlock Text="{Binding CurrentUser.FirstName}" Foreground="White" FontWeight="Bold" FontSize="14" Margin="0,0,5,0"/>
+                    <TextBlock Text="{Binding CurrentUser.MiddleName}" Foreground="White" FontWeight="Bold" FontSize="14"/>
+                </StackPanel>
                 <TextBlock Text="{Binding CurrentUser.Role}" Foreground="#F1C40F" 
-               FontSize="12"/>
-                
-                <Button Content="👥 Реестр персонала" 
-                        Command="{Binding ShowEmployeesCommand}"
-                        Style="{StaticResource MenuButtonStyle}"
-                        Cursor="Hand"/>
+               FontSize="12" Margin="0,0,0,10"/>
 
-                <Button Content="🏥 Медосмотры" 
-                        Style="{StaticResource MenuButtonStyle}"
-                        Cursor="Hand"/>
+                <Separator Margin="0,5,0,15" Opacity="0.3"/>
 
-                <Button Content="📦 Склад / Аптека" 
-                        Command="{Binding ShowInventoryCommand}"
-                        Style="{StaticResource MenuButtonStyle}"
-                        Cursor="Hand"/>
+                <StackPanel x:Name="AdminPanel">
+                    <RadioButton Content="👥 Реестр персонала" 
+                     GroupName="MainMenu"
+                     Command="{Binding ShowEmployeesCommand}"
+                     Style="{StaticResource MenuButtonStyle}"
+                     IsChecked="True" />
 
-                <Button Content="📊 Отчетность" 
-                        Style="{StaticResource MenuButtonStyle}"
-                        Cursor="Hand"/>
+                    <RadioButton Content="🏥 Медосмотры" 
+                     GroupName="MainMenu"
+                     Command="{Binding ShowMedicalExamsCommand}" 
+                     Style="{StaticResource MenuButtonStyle}"
+                     Cursor="Hand"/>
 
-                <Separator Margin="0,20" Opacity="0.3"/>
-                <Button Content="🚪 Выход" Click="Exit_Click" Background="#C0392B" Foreground="White" Height="40" Cursor="Hand"/>
+                    <RadioButton Content="📦 Склад / Аптека" 
+                     GroupName="MainMenu"
+                     Command="{Binding ShowInventoryCommand}"
+                     Style="{StaticResource MenuButtonStyle}"
+                     Cursor="Hand"/>
+
+                    <RadioButton Content="📊 Отчетность" 
+                     GroupName="MainMenu"
+                     Style="{StaticResource MenuButtonStyle}"
+                     Cursor="Hand"/>
+                </StackPanel>
+
+                <StackPanel x:Name="UserPanel" Visibility="Collapsed">
+                    <RadioButton Content="👤 Мой профиль" 
+                     GroupName="MainMenu"
+                     Command="{Binding ShowMyProfileCommand}"
+                     Style="{StaticResource MenuButtonStyle}"
+                     IsChecked="True"
+                     Cursor="Hand"/>
+
+                    <RadioButton Content="🔔 Уведомления" 
+                     GroupName="MainMenu"
+                     Command="{Binding ShowNotificationsCommand}"
+                     Style="{StaticResource MenuButtonStyle}"
+                     Cursor="Hand"/>
+                </StackPanel>
+
+                <Separator Margin="0,5,0,15" Opacity="0.3"/>
+
+                <Button Content="🔄 Сменить аккаунт" 
+            Click="Logout_Click"
+            Background="#34495E" Foreground="White" 
+            Height="35" Margin="0,5" Cursor="Hand" BorderThickness="0">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="5"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+
+                <Button Content="❌ Закрыть систему" 
+            Click="Shutdown_Click"
+            Background="#C0392B" Foreground="White" 
+            Height="35" Margin="0,5" Cursor="Hand" BorderThickness="0">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="5"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
             </StackPanel>
         </Border>
 
-        <ContentControl Grid.Column="1" Content="{Binding CurrentView}" Background="#ECF0F1">
-            <ContentControl.Resources>
-                <DataTemplate DataType="{x:Type vm:EmployeeListViewModel}">
-                    <views:EmployeeListView/>
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type vm:InventoryViewModel}">
-                    <views:InventoryView/>
-                </DataTemplate>
-            </ContentControl.Resources>
-        </ContentControl>
+        <ContentControl Grid.Column="1" Content="{Binding CurrentView}" />
     </Grid>
 </Window>

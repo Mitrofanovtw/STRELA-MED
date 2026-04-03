@@ -14,9 +14,11 @@ namespace STRELA_MED.ViewModels
 {
     public class EmployeeListViewModel : INotifyPropertyChanged
     {
-        private User _currentUser;
+        private Employee _currentUser;
         private ObservableCollection<Employee> _employees;
         private Employee _selectedEmployee;
+        private string _searchText;
+        private ObservableCollection<Employee> _allEmployees;
 
         public ObservableCollection<Employee> Employees
         {
@@ -30,11 +32,22 @@ namespace STRELA_MED.ViewModels
             set { _selectedEmployee = value; OnPropertyChanged(); }
         }
 
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                _searchText = value;
+                OnPropertyChanged();
+                ApplyFilter();
+            }
+        }
+
         public ICommand AddEmployeeCommand { get; }
         public ICommand DeleteEmployeeCommand { get; }
         public ICommand RefreshCommand { get; }
 
-        public EmployeeListViewModel(User user)
+        public EmployeeListViewModel(Employee user)
         {
             _currentUser = user;
 
@@ -49,14 +62,50 @@ namespace STRELA_MED.ViewModels
         {
             using (var db = new AppDbContext())
             {
-                var query = db.Employees.AsQueryable();
+                var list = db.Employees.ToList();
+                _allEmployees = new ObservableCollection<Employee>(list);
+                Employees = new ObservableCollection<Employee>(list);
+            }
+        }
 
-                if (_currentUser.Role == "doctor")
-                    Employees = new ObservableCollection<Employee>(query.Where(e => e.UserId == _currentUser.UserId).ToList());
-                else if (_currentUser.Role == "admin")
-                    Employees = new ObservableCollection<Employee>(query.ToList());
+        private void ApplyFilter()
+        {
+            if (_allEmployees == null) return;
+            if (string.IsNullOrWhiteSpace(SearchText))
+            {
+                Employees = new ObservableCollection<Employee>(_allEmployees);
+                return;
+            }
+
+            var search = SearchText.ToLower().Trim();
+
+            var filtered = _allEmployees.Where(e => {
+                if (SelectedSearchIndex == 0)
+                    return e.LastName != null && e.LastName.ToLower().StartsWith(search);
+
                 else
-                    Employees = new ObservableCollection<Employee>();
+                    return e.Position != null && e.Position.ToLower().Contains(search);
+            }).ToList();
+
+            Employees = new ObservableCollection<Employee>(filtered);
+        }
+
+        private bool _searchByLastName = true;
+        public bool SearchByLastName
+        {
+            get => _searchByLastName;
+            set { _searchByLastName = value; OnPropertyChanged(); ApplyFilter(); }
+        }
+
+        private int _selectedSearchIndex = 0; // 0 - Фамилия, 1 - Должность
+        public int SelectedSearchIndex
+        {
+            get => _selectedSearchIndex;
+            set
+            {
+                _selectedSearchIndex = value;
+                OnPropertyChanged();
+                ApplyFilter();
             }
         }
 
@@ -69,12 +118,19 @@ namespace STRELA_MED.ViewModels
                 {
                     using (var db = new AppDbContext())
                     {
+                        DateTime birthDate = addWindow.BirthDatePicker.SelectedDate ?? DateTime.Now;
+
                         var newEmp = new Employee
                         {
-                            Name = addWindow.NameInput.Text,
-                            Role = addWindow.RoleInput.Text,
-                            UserId = int.Parse(addWindow.UserIdInput.Text)
+                            LastName = addWindow.LastNameInput.Text?.Trim(),
+                            FirstName = addWindow.FirstNameInput.Text?.Trim(),
+                            MiddleName = addWindow.MiddleNameInput.Text?.Trim(),
+                            BirthDate = DateTime.SpecifyKind(addWindow.BirthDatePicker.SelectedDate ?? DateTime.Now, DateTimeKind.Utc),
+                            Position = addWindow.PositionBox.Text,
+
+                            ChronicDiseases = string.IsNullOrWhiteSpace(addWindow.ChronicDiseasesInput.Text) ? "Нет" : addWindow.ChronicDiseasesInput.Text.Trim()
                         };
+
                         db.Employees.Add(newEmp);
                         db.SaveChanges();
                     }
@@ -82,7 +138,9 @@ namespace STRELA_MED.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Ошибка при добавлении: {ex.Message}");
+                    Exception realEx = ex;
+                    while (realEx.InnerException != null) realEx = realEx.InnerException;
+                    MessageBox.Show($"ОШИБКА БАЗЫ: {realEx.Message}");
                 }
             }
         }
@@ -95,8 +153,12 @@ namespace STRELA_MED.ViewModels
             {
                 using (var db = new AppDbContext())
                 {
-                    db.Employees.Remove(SelectedEmployee);
-                    db.SaveChanges();
+                    var empToDelete = db.Employees.Find(SelectedEmployee.Id);
+                    if (empToDelete != null)
+                    {
+                        db.Employees.Remove(empToDelete);
+                        db.SaveChanges();
+                    }
                 }
                 LoadData();
             }
@@ -109,5 +171,44 @@ namespace STRELA_MED.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+        private void OpenEditEmployeeWindow()
+        {
+            if (SelectedEmployee == null) return;
+
+            var editWindow = new AddEmployeeWindow(SelectedEmployee);
+            if (editWindow.ShowDialog() == true)
+            {
+                try
+                {
+                    using (var db = new AppDbContext())
+                    {
+                        var emp = db.Employees.Find(SelectedEmployee.Id);
+                        if (emp != null)
+                        {
+                            emp.LastName = editWindow.LastNameInput.Text;
+                            emp.FirstName = editWindow.FirstNameInput.Text;
+                            emp.MiddleName = editWindow.MiddleNameInput.Text;
+                            emp.BirthDate = DateTime.SpecifyKind(editWindow.BirthDatePicker.SelectedDate ?? DateTime.Now, DateTimeKind.Utc);
+                            emp.Position = editWindow.PositionBox.Text;
+                            emp.ChronicDiseases = string.IsNullOrWhiteSpace(editWindow.ChronicDiseasesInput.Text) ? "Нет" : editWindow.ChronicDiseasesInput.Text.Trim();
+
+                            db.SaveChanges();
+                        }
+                    }
+                    LoadData();
+                }
+                catch (Exception ex) { MessageBox.Show(ex.Message); }
+            }
+        }
+
+        public ICommand OpenCardCommand => new RelayCommand(o => {
+            if (SelectedEmployee != null)
+            {
+                var card = new EmployeeCardWindow();
+                card.DataContext = SelectedEmployee;
+                card.ShowDialog();
+            }
+        });
     }
 }
