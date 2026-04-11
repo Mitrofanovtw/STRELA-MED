@@ -35,8 +35,10 @@ namespace STRELA_MED.Models
         public int? UserId { get; set; }
 
         [Column("FullName")]
+        [NotMapped]
         public string FullName => $"{LastName} {FirstName} {MiddleName}";
         [Column("BirthDateDisplay")]
+        [NotMapped]
         public string BirthDateDisplay => BirthDate.ToString("dd.MM.yyyy");
     }
 }

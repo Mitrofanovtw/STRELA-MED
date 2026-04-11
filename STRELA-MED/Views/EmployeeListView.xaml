@@ -10,10 +10,10 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
-            <Button Content="➕ Добавить" Command="{Binding AddEmployeeCommand}" 
+            <Button x:Name="BtnAdd" Content="➕ Добавить" Command="{Binding AddEmployeeCommand}" 
                     Width="120" Height="30" Margin="0,0,10,0" Background="#27AE60" Foreground="White"
                     Cursor="Hand"/>
-            <Button Content="🗑 Уволить" Command="{Binding DeleteEmployeeCommand}" 
+            <Button x:Name="BtnDelete" Content="🗑 Уволить" Command="{Binding DeleteEmployeeCommand}" 
                     Width="120" Height="30" Margin="0,0,10,0" Background="#C0392B" Foreground="White"
                     Cursor="Hand"/>
             <Button Content="🔄 Обновить" Command="{Binding RefreshCommand}" 

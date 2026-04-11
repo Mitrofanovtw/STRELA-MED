@@ -4,8 +4,8 @@
         Title="Авторизация - АИС СТРЕЛА-МЕД" 
         Height="350" Width="400" 
         WindowStartupLocation="CenterScreen"
-        Background="#ECF0F1">
-
+        Background="#ECF0F1"
+        FocusManager.FocusedElement="{Binding ElementName=LoginBox}">
     <StackPanel VerticalAlignment="Center" Margin="40">
         <TextBlock Text="АИС СТРЕЛА-МЕД" FontSize="22" FontWeight="Bold" 
                    Foreground="#2C3E50" HorizontalAlignment="Center" Margin="0,0,0,30"/>
@@ -16,8 +16,16 @@
         <Label Content="Пароль:"/>
         <PasswordBox x:Name="PasswordBox" Height="30" Margin="0,0,0,20"/>
 
-        <Button Content="ВОЙТИ В СИСТЕМУ" Click="LoginButton_Click" 
+        <Button Content="ВОЙТИ В СИСТЕМУ" 
+                Click="LoginButton_Click" 
+                IsDefault="True" 
                 Height="40" Background="#2C3E50" Foreground="White" 
-                FontWeight="Bold" Cursor="Hand"/>
+                FontWeight="Bold" Cursor="Hand">
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="5"/>
+                </Style>
+            </Button.Resources>
+        </Button>
     </StackPanel>
 </Window>

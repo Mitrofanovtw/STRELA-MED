@@ -13,26 +13,52 @@
 
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
             <TextBlock Text="Поиск сотрудника:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-            <TextBox x:Name="SearchEmployeeExams" Width="300" Height="25" />
+            <TextBox x:Name="SearchEmployeeExams" Width="300" Height="25" 
+                     TextChanged="SearchEmployeeExams_TextChanged"/>
             <Button Content="🔍 Найти историю" Width="150" Margin="10,0,0,0" 
                 Background="#2980B9" Foreground="White" Click="SearchExams_Click"/>
 
-            <Button Content="➕ Вызвать на медосмотр" 
+            <Button x:Name="BtnCallToExam" Content="➕ Вызвать на медосмотр" 
             Click="CallToExam_Click" 
             Background="#E67E22" Foreground="White" 
             FontWeight="Bold" Width="200" Height="35" Margin="10,0,0,0"/>
         </StackPanel>
 
-        <DataGrid x:Name="ExamsGrid" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" 
-              Visibility="Collapsed">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Дата осмотра" Binding="{Binding ExamDate, StringFormat=\{0:dd.MM.yyyy\}}" Width="120"/>
-                <DataGridTextColumn Header="Тип" Binding="{Binding ExamType}" Width="150"/>
-                <DataGridTextColumn Header="Врач" Binding="{Binding DoctorName}" Width="200"/>
-                <DataGridTextColumn Header="Результат" Binding="{Binding Result}" Width="*"/>
-                <DataGridTextColumn Header="Срок до" Binding="{Binding ValidUntil, StringFormat=\{0:dd.MM.yyyy\}}" Width="120"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <Border Grid.Row="1" BorderBrush="#BDC3C7" BorderThickness="1" CornerRadius="5">
+            <DataGrid x:Name="ExamsGrid" 
+          Grid.Row="1" 
+          AutoGenerateColumns="False" 
+          CanUserAddRows="False"
+          IsReadOnly="True"
+          Background="White" 
+          BorderBrush="#BDC3C7" 
+          BorderThickness="1" 
+          GridLinesVisibility="All" 
+          HorizontalGridLinesBrush="#ECF0F1" 
+          VerticalGridLinesBrush="#ECF0F1"
+          RowHeight="35"
+          AlternatingRowBackground="#F9FAFB">
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#2980B9"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="Padding" Value="10,5"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                        <Setter Property="BorderBrush" Value="#BDC3C7"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Фамилия" Binding="{Binding Employee.LastName}" Width="*"/>
+                    <DataGridTextColumn Header="Имя" Binding="{Binding Employee.FirstName}" Width="*"/>
+                    <DataGridTextColumn Header="Тип осмотра" Binding="{Binding ExamType}" Width="1.2*"/>
+                    <DataGridTextColumn Header="Дата" Binding="{Binding ExamDate, StringFormat={}{0:dd.MM.yyyy}}" Width="100"/>
+                    <DataGridTextColumn Header="Результат" Binding="{Binding Result}" Width="1.5*"/>
+                    <DataGridTextColumn Header="Годен до" Binding="{Binding ValidUntil, StringFormat={}{0:dd.MM.yyyy}}" Width="100"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
 
         <TextBlock x:Name="EmptyStateText" Grid.Row="1" Text="Введите фамилию для поиска медицинских записей" 
                HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Gray" FontSize="16"/>

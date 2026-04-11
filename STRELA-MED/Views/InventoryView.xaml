@@ -11,8 +11,9 @@
         <TextBlock Text="Учет медицинских препаратов и расходных материалов" 
                    FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
 
-        <DataGrid Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False"
-                  Background="White" BorderBrush="#BDC3C7">
+        <DataGrid x:Name="MedicineGrid" Grid.Row="1" AutoGenerateColumns="False" 
+          CanUserAddRows="False" Background="White" BorderBrush="#BDC3C7"
+          SelectionChanged="MedicineGrid_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Наименование" Binding="{Binding Name}" Width="*"/>
                 <DataGridTextColumn Header="Остаток" Binding="{Binding Quantity}" Width="100"/>
@@ -22,7 +23,7 @@
         </DataGrid>
 
         <Border Grid.Row="2" Background="White" Margin="0,20,0,0" Padding="15" CornerRadius="5">
-            <StackPanel Orientation="Horizontal">
+            <StackPanel x:Name="AdminControlPanel" Orientation="Horizontal">
                 <StackPanel Margin="0,0,20,0">
                     <Label Content="Выбранный препарат:"/>
                     <TextBox Width="200" IsReadOnly="True" x:Name="SelectedMedicineText"/>
@@ -31,8 +32,10 @@
                     <Label Content="Количество:"/>
                     <TextBox Width="80" x:Name="ActionQuantity"/>
                 </StackPanel>
-                <Button Content="➕ Приход" Width="100" Margin="5,15,5,0" Background="#27AE60" Foreground="White" Cursor="Hand"/>
-                <Button Content="➖ Расход" Width="100" Margin="5,15,5,0" Background="#E67E22" Foreground="White" Cursor="Hand"/>
+                <Button x:Name="BtnArrival" Content="➕ Приход" Click="BtnArrival_Click" 
+        Width="100" Margin="5,15,5,0" Background="#27AE60" Foreground="White" Cursor="Hand"/>
+                <Button x:Name="BtnUsage" Content="➖ Расход" Click="BtnUsage_Click" 
+        Width="100" Margin="5,15,5,0" Background="#E67E22" Foreground="White" Cursor="Hand"/>
             </StackPanel>
         </Border>
     </Grid>

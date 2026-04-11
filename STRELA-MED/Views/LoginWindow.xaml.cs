@@ -26,8 +26,10 @@ namespace STRELA_MED.Views
             using (var db = new AppDbContext())
             {
                 var user = db.Employees.AsEnumerable().FirstOrDefault(u =>
+                u.Login != null &&
+                u.Password != null &&
                 u.Login.Trim().ToLower() == login.ToLower() &&
-                u.Password == password);
+                u.Password.Trim() == password);
 
                 if (user != null)
                 {

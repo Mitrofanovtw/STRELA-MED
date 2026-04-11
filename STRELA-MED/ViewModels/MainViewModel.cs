@@ -21,6 +21,7 @@ namespace STRELA_MED.ViewModels
         public ICommand ShowMedicalExamsCommand { get; }
         public ICommand ShowMyProfileCommand { get; }
         public ICommand ShowNotificationsCommand { get; }
+        public ICommand ShowReportsCommand { get; }
 
         public MainViewModel(Employee user)
         {
@@ -28,6 +29,7 @@ namespace STRELA_MED.ViewModels
             ShowEmployeesCommand = new RelayCommand(o => CurrentView = new EmployeeListViewModel(_currentUser));
             ShowInventoryCommand = new RelayCommand(o => CurrentView = new InventoryViewModel(_currentUser));
             ShowMedicalExamsCommand = new RelayCommand(o => CurrentView = new MedicalExamsViewModel());
+            
             ShowMyProfileCommand = new RelayCommand(o => {
                 var view = new MyProfileView();
                 view.DataContext = _currentUser;
@@ -47,6 +49,8 @@ namespace STRELA_MED.ViewModels
                 view.DataContext = _currentUser;
                 CurrentView = view;
             }
+
+            ShowReportsCommand = new RelayCommand(o => CurrentView = new ReportsViewModel());
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

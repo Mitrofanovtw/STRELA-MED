@@ -56,7 +56,14 @@
         <DataTemplate DataType="{x:Type vmodels:MedicalExamsViewModel}">
             <views:MedicalExamsView />
         </DataTemplate>
+        
+        <DataTemplate DataType="{x:Type vmodels:InventoryViewModel}">
+            <views:InventoryView />
+        </DataTemplate>
 
+        <DataTemplate DataType="{x:Type vmodels:ReportsViewModel}">
+            <views:ReportsView />
+        </DataTemplate>
 
     </Window.Resources>
 
@@ -72,10 +79,18 @@
                FontWeight="Bold" Margin="0,20,0,40" HorizontalAlignment="Center"/>
 
                 <TextBlock Text="Вы вошли как:" Foreground="Gray" FontSize="11"/>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock Text="{Binding CurrentUser.LastName}" Foreground="White" FontWeight="Bold" FontSize="14" Margin="0,0,5,0"/>
-                    <TextBlock Text="{Binding CurrentUser.FirstName}" Foreground="White" FontWeight="Bold" FontSize="14" Margin="0,0,5,0"/>
-                    <TextBlock Text="{Binding CurrentUser.MiddleName}" Foreground="White" FontWeight="Bold" FontSize="14"/>
+                <StackPanel Margin="0,5,0,10">
+                    <TextBlock Text="{Binding CurrentUser.LastName}" 
+                       Foreground="White" FontWeight="Bold" FontSize="14" 
+                       TextWrapping="Wrap" HorizontalAlignment="Center"/>
+
+                    <TextBlock Text="{Binding CurrentUser.FirstName}" 
+                       Foreground="White" FontWeight="Bold" FontSize="14" 
+                       TextWrapping="Wrap" HorizontalAlignment="Center"/>
+
+                    <TextBlock Text="{Binding CurrentUser.MiddleName}" 
+                       Foreground="White" FontWeight="Bold" FontSize="14" 
+                       TextWrapping="Wrap" HorizontalAlignment="Center"/>
                 </StackPanel>
                 <TextBlock Text="{Binding CurrentUser.Role}" Foreground="#F1C40F" 
                FontSize="12" Margin="0,0,0,10"/>
@@ -103,6 +118,7 @@
 
                     <RadioButton Content="📊 Отчетность" 
                      GroupName="MainMenu"
+                     Command="{Binding ShowReportsCommand}"
                      Style="{StaticResource MenuButtonStyle}"
                      Cursor="Hand"/>
                 </StackPanel>
