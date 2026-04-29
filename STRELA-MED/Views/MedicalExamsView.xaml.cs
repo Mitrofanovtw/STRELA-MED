@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace STRELA_MED.Views
 {
@@ -96,6 +97,20 @@ namespace STRELA_MED.Views
             else
             {
                 MessageBox.Show("Пожалуйста, выберите запись в таблице!");
+            }
+        }
+
+        private void ExamsGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var selectedExam = ExamsGrid.SelectedItem as STRELA_MED.Models.MedicalExam;
+            if (selectedExam != null && selectedExam.Employee != null)
+            {
+                var examCard = new STRELA_MED.Views.ExamCardWindow(selectedExam.Employee);
+
+                if (examCard.ShowDialog() == true)
+                {
+                    SearchExams_Click(null, null);
+                }
             }
         }
     }

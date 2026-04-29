@@ -18,7 +18,8 @@ namespace STRELA_MED.Views
         {
             using (var db = new AppDbContext())
             {
-                var myId = CurrentUser.Data.Id;
+                int myId = UserSession.CurrentUserId;
+
                 var list = db.Notifications
                              .Where(n => n.EmployeeId == myId)
                              .OrderByDescending(n => n.AppointmentDate)

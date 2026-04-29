@@ -33,6 +33,9 @@ namespace STRELA_MED.Views
 
                 if (user != null)
                 {
+                    UserSession.CurrentUserId = user.Id;
+                    UserSession.CurrentUserName = $"{user.LastName} {user.FirstName[0]}. {user.MiddleName[0]}.";
+                    UserSession.CurrentRole = user.Role;
                     CurrentUser.Data = user;
                     var mainWindow = new MainWindow();
                     mainWindow.Show();

@@ -98,6 +98,12 @@
                 <Separator Margin="0,5,0,15" Opacity="0.3"/>
 
                 <StackPanel x:Name="AdminPanel">
+                    <RadioButton Content="Мои уведомления" 
+                     GroupName="MainMenu"
+                     Command="{Binding ShowNotificationsCommand}"
+                     Style="{StaticResource MenuButtonStyle}"
+                     Cursor="Hand"/>
+                    
                     <RadioButton Content="👥 Реестр персонала" 
                      GroupName="MainMenu"
                      Command="{Binding ShowEmployeesCommand}"

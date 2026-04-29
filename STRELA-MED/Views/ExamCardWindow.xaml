@@ -1,0 +1,79 @@
+﻿<Window x:Class="STRELA_MED.Views.ExamCardWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:STRELA_MED.Views"
+        mc:Ignorable="d"
+        Title="Карточка медосмотра" Height="550" Width="450"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+
+    <Grid Background="#F5F5F5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#2196F3">
+            <StackPanel Margin="15">
+                <TextBlock Text="РЕЗУЛЬТАТЫ ОСМОТРА" Foreground="White" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <TextBlock x:Name="txtEmployeeName" Text="Сотрудник: Иванов И.И." Foreground="White" FontSize="14" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <Border Padding="20">
+                <StackPanel>
+                    <TextBlock Text="Общие данные" FontWeight="SemiBold" Foreground="#666" Margin="0,0,0,10"/>
+
+                    <Label Content="Тип медосмотра:"/>
+                    <TextBox x:Name="tbExamType" Margin="0,0,0,15" Height="25" VerticalContentAlignment="Center" Text="Периодический"/>
+
+                    <Label Content="Жалобы сотрудника:"/>
+                    <TextBox x:Name="tbComplaints" Height="60" TextWrapping="Wrap" AcceptsReturn="True" Margin="0,0,0,15"/>
+
+                    <Separator Margin="0,5,0,15"/>
+                    <TextBlock Text="Физиологические показатели" FontWeight="SemiBold" Foreground="#666" Margin="0,0,0,10"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                            <Label Content="Давление (АД):"/>
+                            <TextBox x:Name="tbBP" Height="25" VerticalContentAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                            <Label Content="Пульс (уд/мин):"/>
+                            <TextBox x:Name="tbPulse" Height="25" VerticalContentAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <Label Content="Итоговое заключение:" Margin="0,15,0,0"/>
+                    <ComboBox x:Name="cbResult" Height="30" VerticalContentAlignment="Center" SelectedIndex="0">
+                        <ComboBoxItem Content="Допущен к работе"/>
+                        <ComboBoxItem Content="Направлен на дообследование"/>
+                        <ComboBoxItem Content="Не допущен"/>
+                    </ComboBox>
+                </StackPanel>
+            </Border>
+        </ScrollViewer>
+
+        <Border Grid.Row="2" Background="White" BorderBrush="#DDD" BorderThickness="0,1,0,0">
+            <Grid Margin="15">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Content="Отмена" Click="Cancel_Click" Grid.Column="0" Margin="0,0,5,0" Height="30" Background="#EEE"/>
+                <Button Content="Сохранить итоги" Click="SaveExam_Click" Grid.Column="1" Margin="5,0,0,0" Height="30" 
+                        Background="#4CAF50" Foreground="White" FontWeight="Bold"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
