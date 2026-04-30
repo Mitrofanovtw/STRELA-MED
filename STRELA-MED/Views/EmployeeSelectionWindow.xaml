@@ -1,0 +1,33 @@
+﻿<Window x:Class="STRELA_MED.Views.EmployeeSelectionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Выбор сотрудника для осмотра" Height="450" Width="500"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,10">
+            <TextBlock Text="Поиск сотрудника (по фамилии):" FontWeight="Bold" Margin="0,0,0,5"/>
+            <TextBox x:Name="tbSearch" Height="25" TextChanged="tbSearch_TextChanged" 
+                     VerticalContentAlignment="Center" Padding="5,0"/>
+        </StackPanel>
+
+        <DataGrid x:Name="dgEmployees" Grid.Row="1" AutoGenerateColumns="False" 
+                  IsReadOnly="True" SelectionMode="Single" MouseDoubleClick="dgEmployees_MouseDoubleClick">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName}" Width="*"/>
+                <DataGridTextColumn Header="Имя" Binding="{Binding FirstName}" Width="*"/>
+                <DataGridTextColumn Header="Должность" Binding="{Binding Position}" Width="1.5*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button Content="Отмена" Width="80" Height="25" Click="Cancel_Click" Margin="0,0,10,0"/>
+            <Button Content="Выбрать" Width="100" Height="25" Click="Select_Click" Background="#4CAF50" Foreground="White"/>
+        </StackPanel>
+    </Grid>
+</Window>

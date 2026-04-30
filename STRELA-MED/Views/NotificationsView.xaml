@@ -4,10 +4,10 @@
              Background="White">
     <Grid Margin="30">
         <StackPanel>
-            <TextBlock Text="ВАШИ УВЕДОМЛЕНИЯ" FontSize="22" FontWeight="Bold" Foreground="#2C3E50" Margin="0,0,0,20"/>
+            <TextBlock x:Name="txtHeader" Text="ВАШИ УВЕДОМЛЕНИЯ" FontSize="22" FontWeight="Bold" Foreground="#2C3E50" Margin="0,0,0,20"/>
 
             <Border Background="#FDFEFE" CornerRadius="8" BorderBrush="#EBEDEF" BorderThickness="1" Padding="10">
-                <DataGrid x:Name="NotificationsGrid" AutoGenerateColumns="False" IsReadOnly="True" 
+                <DataGrid x:Name="NotificationsGrid" MouseDoubleClick="NotificationsGrid_MouseDoubleClick" AutoGenerateColumns="False" IsReadOnly="True" 
                           Background="Transparent" BorderThickness="0" GridLinesVisibility="Horizontal"
                           FontSize="14" RowHeight="40">
                     <DataGrid.Columns>
@@ -19,13 +19,26 @@
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="100"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>
 
             <TextBlock Text="* Примечание: Пожалуйста, явитесь в указанный срок с паспортом и медкнижкой." 
                        Foreground="#7F8C8D" FontSize="12" Margin="0,15,0,0" FontStyle="Italic"/>
+            <Button Content="🗑 Очистить все" 
+            Click="ClearNotifications_Click" 
+            Margin="20,0,0,0" 
+            Padding="10,0" 
+            Background="#E74C3C" 
+            Foreground="White" 
+            FontWeight="Bold"
+            Height="30">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="5"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
         </StackPanel>
     </Grid>
 </UserControl>

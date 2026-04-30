@@ -20,5 +20,6 @@ namespace STRELA_MED.Models
         public int? Pulse { get; set; }
         public string? Complaints { get; set; }
         public string? Conclusion { get; set; }
+        public double? AlcoholLevel { get; set; }
     }
 }

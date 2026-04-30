@@ -22,6 +22,10 @@ namespace STRELA_MED.ViewModels
         public ICommand ShowMyProfileCommand { get; }
         public ICommand ShowNotificationsCommand { get; }
         public ICommand ShowReportsCommand { get; }
+        public ICommand ShowMyExamsCommand => new RelayCommand(o =>
+        {
+            CurrentView = new MyExamsViewModel(CurrentUser);
+        });
 
         public MainViewModel(Employee user)
         {

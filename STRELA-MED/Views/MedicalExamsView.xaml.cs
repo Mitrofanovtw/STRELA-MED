@@ -31,25 +31,37 @@ namespace STRELA_MED.Views
                     string search = searchText.ToLower();
                     query = query.Where(e =>
                         e.Employee.LastName.ToLower().Contains(search) ||
-                        e.Employee.FirstName.ToLower().Contains(search) ||
-                        e.ExamType.ToLower().Contains(search));
+                        e.Employee.FirstName.ToLower().Contains(search));
                 }
 
                 var results = query.ToList();
-                ExamsGrid.ItemsSource = results;
 
                 if (results.Any())
                 {
+                    ExamsGrid.ItemsSource = results;
                     ExamsGrid.Visibility = Visibility.Visible;
                     EmptyStateText.Visibility = Visibility.Collapsed;
                 }
-                else
+                else if (!string.IsNullOrWhiteSpace(searchText))
                 {
-                    ExamsGrid.Visibility = Visibility.Collapsed;
-                    EmptyStateText.Visibility = Visibility.Visible;
-                    EmptyStateText.Text = string.IsNullOrEmpty(searchText)
-                        ? "База медосмотров пуста"
-                        : "По вашему запросу ничего не найдено";
+                    var employeeSearch = db.Employees
+                        .Where(emp => emp.LastName.ToLower().Contains(searchText.ToLower()))
+                        .ToList();
+
+                    if (employeeSearch.Any())
+                    {
+                        ExamsGrid.Visibility = Visibility.Collapsed;
+                        EmptyStateText.Visibility = Visibility.Visible;
+                        EmptyStateText.Text = $"У сотрудника {employeeSearch[0].LastName} еще нет записей об осмотрах.\nНажмите 'Вызвать', чтобы отправить уведомление.";
+
+                        BtnCallToExam.Tag = employeeSearch[0];
+                    }
+                    else
+                    {
+                        ExamsGrid.Visibility = Visibility.Collapsed;
+                        EmptyStateText.Visibility = Visibility.Visible;
+                        EmptyStateText.Text = "Сотрудник не найден в базе данных";
+                    }
                 }
             }
         }
@@ -62,6 +74,7 @@ namespace STRELA_MED.Views
             if (user.Role != "Doctor")
             {
                 BtnCallToExam.Visibility = Visibility.Collapsed;
+                BtnNewExam.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -77,39 +90,93 @@ namespace STRELA_MED.Views
 
         private void CallToExam_Click(object sender, RoutedEventArgs e)
         {
-            if (ExamsGrid.SelectedItem is MedicalExam selected)
-            {
-                using (var db = new AppDbContext())
-                {
-                    var notification = new Notification
-                    {
-                        EmployeeId = selected.EmployeeId,
-                        Message = $"Доброго времени суток, {selected.Employee.LastName}, вам необходимо явиться в медпункт для прохождения медицинского осмотра.",
-                        AppointmentDate = DateTime.SpecifyKind(DateTime.Now.AddDays(1), DateTimeKind.Utc),
-                        IsRead = false
-                    };
+            var selectionWindow = new CallEmployeeSelectionWindow();
+            selectionWindow.Owner = Window.GetWindow(this);
 
-                    db.Notifications.Add(notification);
-                    db.SaveChanges();
-                    MessageBox.Show($"Уведомление для {selected.Employee.LastName} успешно отправлено!");
-                }
-            }
-            else
+            if (selectionWindow.ShowDialog() == true)
             {
-                MessageBox.Show("Пожалуйста, выберите запись в таблице!");
+                Employee targetEmployee = selectionWindow.SelectedEmployee;
+
+                string defaultText = $"Уважаемый(ая) {targetEmployee.FirstName} {targetEmployee.MiddleName}, приглашаем вас на плановый медосмотр.";
+                var sendWindow = new SendNotificationWindow(defaultText);
+
+                if (sendWindow.ShowDialog() == true)
+                {
+                    using (var db = new AppDbContext())
+                    {
+                        var notification = new Notification
+                        {
+                            EmployeeId = targetEmployee.Id,
+                            Message = sendWindow.FinalMessage,
+                            AppointmentDate = DateTime.SpecifyKind(DateTime.Now.AddDays(1), DateTimeKind.Utc),
+                            IsRead = false
+                        };
+                        db.Notifications.Add(notification);
+                        db.SaveChanges();
+                        MessageBox.Show("Уведомление успешно отправлено!");
+                    }
+                }
             }
         }
 
         private void ExamsGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var selectedExam = ExamsGrid.SelectedItem as STRELA_MED.Models.MedicalExam;
-            if (selectedExam != null && selectedExam.Employee != null)
+            var selectedExam = ExamsGrid.SelectedItem as MedicalExam;
+            if (selectedExam != null)
             {
-                var examCard = new STRELA_MED.Views.ExamCardWindow(selectedExam.Employee);
+                var viewWindow = new ExamCardWindow(selectedExam);
+                viewWindow.Owner = Window.GetWindow(this);
+                viewWindow.ShowDialog();
+            }
+        }
+
+        private void DeleteExam_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            var exam = button?.DataContext as MedicalExam;
+
+            if (exam == null) return;
+
+            var result = MessageBox.Show(
+                $"Вы уверены, что хотите удалить запись о медосмотре сотрудника {exam.Employee?.LastName} от {exam.ExamDate:dd.MM.yyyy}?",
+                "Подтверждение удаления",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    using (var db = new AppDbContext())
+                    {
+                        db.MedicalExams.Remove(exam);
+                        db.SaveChanges();
+                    }
+
+                    LoadExams(SearchEmployeeExams.Text);
+
+                    MessageBox.Show("Запись успешно удалена.", "Готово", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при удалении: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private void NewExam_Click(object sender, RoutedEventArgs e)
+        {
+            var selectWindow = new EmployeeSelectionWindow();
+            selectWindow.Owner = Window.GetWindow(this);
+
+            if (selectWindow.ShowDialog() == true)
+            {
+                var targetEmployee = selectWindow.SelectedEmployee;
+                var examCard = new ExamCardWindow(targetEmployee);
 
                 if (examCard.ShowDialog() == true)
                 {
-                    SearchExams_Click(null, null);
+                    LoadExams();
                 }
             }
         }

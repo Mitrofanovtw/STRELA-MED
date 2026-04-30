@@ -40,5 +40,7 @@ namespace STRELA_MED.Models
         [Column("BirthDateDisplay")]
         [NotMapped]
         public string BirthDateDisplay => BirthDate.ToString("dd.MM.yyyy");
+        [Column("PhotoPath")]
+        public string? PhotoPath { get; set; }
     }
 }

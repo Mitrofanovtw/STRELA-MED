@@ -65,6 +65,10 @@
             <views:ReportsView />
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type vmodels:MyExamsViewModel}">
+            <views:MyExamsView />
+        </DataTemplate>
+
     </Window.Resources>
 
     <Grid>
@@ -98,7 +102,7 @@
                 <Separator Margin="0,5,0,15" Opacity="0.3"/>
 
                 <StackPanel x:Name="AdminPanel">
-                    <RadioButton Content="Мои уведомления" 
+                    <RadioButton Content="🔔 Мои уведомления" 
                      GroupName="MainMenu"
                      Command="{Binding ShowNotificationsCommand}"
                      Style="{StaticResource MenuButtonStyle}"
@@ -127,6 +131,12 @@
                      Command="{Binding ShowReportsCommand}"
                      Style="{StaticResource MenuButtonStyle}"
                      Cursor="Hand"/>
+
+                    <RadioButton Content="📋 Мои осмотры" 
+                     GroupName="MainMenu"
+                     Command="{Binding ShowMyExamsCommand}"
+                     Style="{StaticResource MenuButtonStyle}"
+                     Cursor="Hand"/>
                 </StackPanel>
 
                 <StackPanel x:Name="UserPanel" Visibility="Collapsed">
@@ -135,6 +145,12 @@
                      Command="{Binding ShowMyProfileCommand}"
                      Style="{StaticResource MenuButtonStyle}"
                      IsChecked="True"
+                     Cursor="Hand"/>
+
+                    <RadioButton Content="📋 Мои осмотры" 
+                     GroupName="MainMenu"
+                     Command="{Binding ShowMyExamsCommand}"
+                     Style="{StaticResource MenuButtonStyle}"
                      Cursor="Hand"/>
 
                     <RadioButton Content="🔔 Уведомления" 

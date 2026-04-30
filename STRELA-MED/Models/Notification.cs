@@ -12,6 +12,6 @@ namespace STRELA_MED.Models
         public int EmployeeId { get; set; }
         public string Message { get; set; }
         public DateTime AppointmentDate { get; set; }
-        public bool IsRead { get; set; }
+        public bool IsRead { get; set; } = false;
     }
 }

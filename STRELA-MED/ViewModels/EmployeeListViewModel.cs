@@ -80,11 +80,20 @@ namespace STRELA_MED.ViewModels
             var search = SearchText.ToLower().Trim();
 
             var filtered = _allEmployees.Where(e => {
-                if (SelectedSearchIndex == 0)
-                    return e.LastName != null && e.LastName.ToLower().StartsWith(search);
+                switch (SelectedSearchIndex)
+                {
+                    case 0:
+                        return e.LastName != null && e.LastName.ToLower().StartsWith(search);
 
-                else
-                    return e.Position != null && e.Position.ToLower().Contains(search);
+                    case 1:
+                        return e.FirstName != null && e.FirstName.ToLower().StartsWith(search);
+
+                    case 2:
+                        return e.Position != null && e.Position.ToLower().Contains(search);
+
+                    default:
+                        return false;
+                }
             }).ToList();
 
             Employees = new ObservableCollection<Employee>(filtered);
@@ -97,7 +106,7 @@ namespace STRELA_MED.ViewModels
             set { _searchByLastName = value; OnPropertyChanged(); ApplyFilter(); }
         }
 
-        private int _selectedSearchIndex = 0; // 0 - Фамилия, 1 - Должность
+        private int _selectedSearchIndex = 0;
         public int SelectedSearchIndex
         {
             get => _selectedSearchIndex;

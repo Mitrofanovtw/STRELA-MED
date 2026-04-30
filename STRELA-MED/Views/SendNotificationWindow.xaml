@@ -1,0 +1,22 @@
+﻿<Window x:Class="STRELA_MED.Views.SendNotificationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Отправка уведомления" Height="300" Width="400" 
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Margin="15">
+        <StackPanel>
+            <TextBlock Text="Текст уведомления:" FontWeight="Bold" Margin="0,0,0,10"/>
+            <TextBox x:Name="tbMessage" Height="150" TextWrapping="Wrap" AcceptsReturn="True" 
+                     VerticalScrollBarVisibility="Auto" Padding="5"/>
+
+            <Grid Margin="0,15,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Content="Отмена" Click="Cancel_Click" Margin="0,0,5,0" Height="30"/>
+                <Button Content="Отправить" Click="Send_Click" Background="#27AE60" Foreground="White" FontWeight="Bold" Height="30" Grid.Column="1" Margin="5,0,0,0"/>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -1,4 +1,5 @@
-﻿using STRELA_MED.Models;
+﻿using STRELA_MED.Data;
+using STRELA_MED.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,39 @@ namespace STRELA_MED.Views
         {
             InitializeComponent();
             this.DataContext = CurrentUser.Data;
+        }
+
+        private void ChangePhoto_Click(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            dlg.Filter = "Изображения|*.jpg;*.jpeg;*.png;*.bmp";
+
+            if (dlg.ShowDialog() == true)
+            {
+                try
+                {
+                    string filePath = dlg.FileName;
+
+                    using (var db = new AppDbContext())
+                    {
+                        var user = db.Employees.Find(CurrentUser.Data.Id);
+                        if (user != null)
+                        {
+                            user.PhotoPath = filePath;
+                            db.SaveChanges();
+
+                            
+                            ProfileImage.Source = new BitmapImage(new Uri(filePath));
+
+                            MessageBox.Show("Фотография успешно обновлена!", "Успех");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Ошибка при загрузке фото: " + ex.Message);
+                }
+            }
         }
     }
 }

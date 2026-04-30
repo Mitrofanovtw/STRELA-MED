@@ -10,32 +10,31 @@
 
         <TextBlock Text="АНАЛИТИЧЕСКИЙ ОТЧЕТ" FontSize="24" FontWeight="Bold" Foreground="#2C3E50" Margin="0,0,0,30"/>
 
-        <UniformGrid Grid.Row="1" Columns="2" Rows="2" VerticalAlignment="Top">
-            <Border Background="White" Margin="10" CornerRadius="10" Padding="20" Effect="{DynamicResource DropShadow}">
+        <UniformGrid Grid.Row="1" Columns="3" Rows="1" VerticalAlignment="Top">
+            <Border Background="White" Margin="10" CornerRadius="10" Padding="20" 
+            MouseDown="ShowEmployees_MouseDown" Cursor="Hand">
                 <StackPanel>
                     <TextBlock Text="Всего сотрудников" Foreground="Gray" FontSize="14"/>
                     <TextBlock Text="{Binding TotalEmployees}" FontSize="36" FontWeight="Bold" Foreground="#2980B9"/>
+                    <TextBlock Text="Перейти к списку →" FontSize="11" Foreground="#3498DB" Margin="0,10,0,0"/>
                 </StackPanel>
             </Border>
 
-            <Border Background="White" Margin="10" CornerRadius="10" Padding="20">
-                <StackPanel>
-                    <TextBlock Text="Пройдено медосмотров" Foreground="Gray" FontSize="14"/>
-                    <TextBlock Text="{Binding CompletedExams}" FontSize="36" FontWeight="Bold" Foreground="#27AE60"/>
-                </StackPanel>
+            <Border Background="White" Margin="10" CornerRadius="10" Padding="20"
+            MouseDown="ShowPending_MouseDown" Cursor="Hand">
+            <StackPanel>
+                <TextBlock Text="Ожидают осмотра" Foreground="Gray" FontSize="14"/>
+                <TextBlock Text="{Binding PendingExams}" FontSize="36" FontWeight="Bold" Foreground="#E67E22"/>
+                <TextBlock Text="Посмотреть список →" FontSize="11" Foreground="#D35400" Margin="0,10,0,0"/>
+            </StackPanel>
             </Border>
 
-            <Border Background="White" Margin="10" CornerRadius="10" Padding="20">
-                <StackPanel>
-                    <TextBlock Text="Ожидают осмотра" Foreground="Gray" FontSize="14"/>
-                    <TextBlock Text="{Binding PendingExams}" FontSize="36" FontWeight="Bold" Foreground="#E67E22"/>
-                </StackPanel>
-            </Border>
-
-            <Border Background="White" Margin="10" CornerRadius="10" Padding="20">
+            <Border Background="White" Margin="10" CornerRadius="10" Padding="20"
+            MouseDown="ShowLowStock_MouseDown" Cursor="Hand">
                 <StackPanel>
                     <TextBlock Text="Дефицит товаров (склад)" Foreground="Gray" FontSize="14"/>
                     <TextBlock Text="{Binding LowStockItems}" FontSize="36" FontWeight="Bold" Foreground="#C0392B"/>
+                    <TextBlock Text="Открыть ведомость →" FontSize="11" Foreground="#E74C3C" Margin="0,10,0,0"/>
                 </StackPanel>
             </Border>
 

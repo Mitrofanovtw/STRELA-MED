@@ -1,17 +1,21 @@
-﻿using iText.Kernel.Pdf;
+﻿using iText.IO.Font.Constants;
+using iText.Kernel.Font;
+using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
-using iText.Kernel.Font;
-using iText.IO.Font.Constants;
 using iText.Layout.Properties;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using STRELA_MED.Data;
+using STRELA_MED.Models;
 using System;
-using System.Linq;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Microsoft.EntityFrameworkCore;
+using System.Windows.Data;
+using System.Windows.Input;
+
 
 namespace STRELA_MED.Views
 {
@@ -20,6 +24,119 @@ namespace STRELA_MED.Views
         public ReportsView()
         {
             InitializeComponent();
+        }
+
+        private void ShowEmployees_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var dg = new DataGrid
+            {
+                Margin = new Thickness(15),
+                AutoGenerateColumns = false,
+                IsReadOnly = true,
+                ItemsSource = GetAllEmployees(),
+                Columns =
+        {
+            new DataGridTextColumn { Header = "Фамилия", Binding = new Binding("LastName"), Width = 150 },
+            new DataGridTextColumn { Header = "Имя", Binding = new Binding("FirstName"), Width = 150 },
+            new DataGridTextColumn { Header = "Должность", Binding = new Binding("Position"), Width = new DataGridLength(1, DataGridLengthUnitType.Star) }
+        }
+            };
+
+            dg.MouseDoubleClick += (s, ev) =>
+            {
+                if (dg.SelectedItem is Employee selectedEmp)
+                {
+                    var analytics = new EmployeeAnalyticsWindow(selectedEmp);
+                    analytics.ShowDialog();
+                }
+            };
+
+            var employeesWindow = new Window
+            {
+                Title = "Реестр сотрудников (двойной клик для аналитики)",
+                Width = 800,
+                Height = 500,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Content = dg
+            };
+            employeesWindow.ShowDialog();
+        }
+
+        private void ShowPending_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var pendingWindow = new Window
+            {
+                Title = "Список сотрудников, ожидающих осмотра",
+                Width = 800,
+                Height = 500,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Content = new DataGrid
+                {
+                    Margin = new Thickness(15),
+                    AutoGenerateColumns = false,
+                    IsReadOnly = true,
+                    ItemsSource = GetPendingEmployees(),
+                    Columns =
+                    {
+                        new DataGridTextColumn { Header = "Фамилия", Binding = new Binding("LastName"), Width = 200 },
+                        new DataGridTextColumn { Header = "Должность", Binding = new Binding("Position"), Width = 200 },
+                        new DataGridTextColumn { Header = "Статус", Binding = new Binding("Status"), Width = new DataGridLength(1, DataGridLengthUnitType.Star) }
+                    }
+                }
+            };
+            pendingWindow.ShowDialog();
+        }
+
+        private void ShowLowStock_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var lowStockList = new Window
+            {
+                Title = "Ведомость дефицита товаров",
+                Width = 500,
+                Height = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Content = new DataGrid
+                {
+                    Margin = new Thickness(10),
+                    AutoGenerateColumns = false,
+                    IsReadOnly = true,
+                    ItemsSource = GetLowStockData(),
+                    Columns =
+                    {
+                        new DataGridTextColumn { Header = "Наименование", Binding = new Binding("Name"), Width = new DataGridLength(1, DataGridLengthUnitType.Star) },
+                        new DataGridTextColumn { Header = "Остаток", Binding = new Binding("Quantity"), Width = 100 }
+                    }
+                }
+            };
+            lowStockList.ShowDialog();
+        }
+        private System.Collections.IEnumerable GetAllEmployees()
+        {
+            using (var db = new AppDbContext())
+            {
+                return db.Employees.OrderBy(e => e.LastName).ToList();
+            }
+        }
+
+        private System.Collections.IEnumerable GetPendingEmployees()
+        {
+            using (var db = new AppDbContext())
+            {
+                var today = DateTime.UtcNow;
+                return db.Employees.ToList()
+                    .Where(e => !db.MedicalExams.Any(m => m.EmployeeId == e.Id) ||
+                                db.MedicalExams.Where(m => m.EmployeeId == e.Id).Max(m => m.ValidUntil) < today)
+                    .Select(e => new { e.LastName, e.FirstName, e.Position, Status = "Требуется осмотр" })
+                    .ToList();
+            }
+        }
+
+        private System.Collections.IEnumerable GetLowStockData()
+        {
+            using (var db = new AppDbContext())
+            {
+                return db.Medicines.Where(m => m.Quantity < 10).ToList();
+            }
         }
 
         private void GeneratePdfReport_Click(object sender, RoutedEventArgs e)

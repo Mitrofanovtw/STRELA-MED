@@ -28,7 +28,12 @@
                     <TextBlock Text="Общие данные" FontWeight="SemiBold" Foreground="#666" Margin="0,0,0,10"/>
 
                     <Label Content="Тип медосмотра:"/>
-                    <TextBox x:Name="tbExamType" Margin="0,0,0,15" Height="25" VerticalContentAlignment="Center" Text="Периодический"/>
+                    <ComboBox x:Name="cbExamType" Margin="0,0,0,15" Height="30" VerticalContentAlignment="Center" SelectedIndex="0">
+                        <ComboBoxItem Content="Предрейсовый"/>
+                        <ComboBoxItem Content="Послерейсовый"/>
+                        <ComboBoxItem Content="Периодический"/>
+                        <ComboBoxItem Content="Внеочередной"/>
+                    </ComboBox>
 
                     <Label Content="Жалобы сотрудника:"/>
                     <TextBox x:Name="tbComplaints" Height="60" TextWrapping="Wrap" AcceptsReturn="True" Margin="0,0,0,15"/>
@@ -40,16 +45,25 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
                         <StackPanel Grid.Column="0" Margin="0,0,10,0">
                             <Label Content="Давление (АД):"/>
-                            <TextBox x:Name="tbBP" Height="25" VerticalContentAlignment="Center"/>
+                            <TextBox x:Name="tbBP" Height="25" VerticalContentAlignment="Center"
+                                      PreviewTextInput="NumberValidationTextBox"/>
                         </StackPanel>
 
                         <StackPanel Grid.Column="1" Margin="10,0,0,0">
                             <Label Content="Пульс (уд/мин):"/>
-                            <TextBox x:Name="tbPulse" Height="25" VerticalContentAlignment="Center"/>
+                            <TextBox x:Name="tbPulse" Height="25" VerticalContentAlignment="Center" 
+                                      PreviewTextInput="NumberValidationTextBox"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2" Margin="5,0,0,0">
+                            <Label Content="Алкоголь (‰):"/>
+                            <TextBox x:Name="tbAlcohol" Height="25" VerticalContentAlignment="Center" Text="0.0"
+                                      PreviewTextInput="NumberValidationTextBox"/>
                         </StackPanel>
                     </Grid>
 
@@ -70,8 +84,8 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Button Content="Отмена" Click="Cancel_Click" Grid.Column="0" Margin="0,0,5,0" Height="30" Background="#EEE"/>
-                <Button Content="Сохранить итоги" Click="SaveExam_Click" Grid.Column="1" Margin="5,0,0,0" Height="30" 
+                <Button x:Name="btnCancel" Content="Отмена" Click="Cancel_Click" Grid.Column="0" Margin="0,0,5,0" Height="30" Background="#EEE"/>
+                <Button x:Name="btnSave" Content="Сохранить итоги" Click="SaveExam_Click" Grid.Column="1" Margin="5,0,0,0" Height="30" 
                         Background="#4CAF50" Foreground="White" FontWeight="Bold"/>
             </Grid>
         </Border>
