@@ -22,6 +22,7 @@ namespace STRELA_MED.Views
     /// </summary>
     public partial class InventoryView : UserControl
     {
+        private List<Medicine> _allMedicines = new List<Medicine>();
         public InventoryView()
         {
             InitializeComponent();
@@ -33,8 +34,29 @@ namespace STRELA_MED.Views
         {
             using (var db = new AppDbContext())
             {
-                MedicineGrid.ItemsSource = db.Medicines.ToList();
+                _allMedicines = db.Medicines.ToList();
+                UpdateGrid();
             }
+        }
+        private void UpdateGrid()
+        {
+            string search = SearchTextBox.Text.Trim().ToLower();
+
+            if (string.IsNullOrWhiteSpace(search))
+            {
+                MedicineGrid.ItemsSource = _allMedicines;
+            }
+            else
+            {
+                MedicineGrid.ItemsSource = _allMedicines
+                    .Where(m => m.Name != null && m.Name.ToLower().Contains(search))
+                    .ToList();
+            }
+        }
+
+        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            UpdateGrid();
         }
 
         private void ApplyPermissions()
@@ -109,3 +131,4 @@ namespace STRELA_MED.Views
         }
     }
 }
+
